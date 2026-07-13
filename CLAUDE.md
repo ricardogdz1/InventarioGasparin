@@ -38,6 +38,8 @@ Tauri 2.x · React 18+ · TypeScript · Vite · Konva.js (react-konva) · Tailwi
 - Roles: Administrador (everything), Gestor (create + move items), Consulta (read-only).
 - Overdue Stripe subscription = soft lock (read-only mode), not a hard block.
 
-## Repo
+## Infra
 
-GitHub: https://github.com/ricardogdz1/InventarioGasparin (git not yet initialized locally).
+- GitHub: https://github.com/ricardogdz1/InventarioGasparin (branch `master`).
+- Supabase project: `ydftbrzcwbhtjhdtukmf` (InventarioGasparin, sa-east-1). Every schema change: write the SQL to `supabase/migrations/` AND apply it to the project (keep both in sync).
+- Windows build gotcha: if `cargo`/`tauri` fails with `LNK1104: cannot open msvcrt.lib`, run the command inside the VS environment: `cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && <command>'`.
