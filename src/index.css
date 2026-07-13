@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+/*
+ * Modo claro apenas na v1 (especificação). As cores ficam centralizadas em
+ * variáveis para permitir a introdução de um tema escuro no futuro sem
+ * reescrever os componentes.
+ */
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

@@ -27,12 +27,14 @@ O software será vendido por **assinatura mensal**, com dados armazenados em **b
 ## Funcionalidades
 
 ### 1. Autenticação e Assinatura
+
 - Login com e-mail/senha (Supabase Auth)
 - Cada empresa é um "tenant" isolado: usuários de uma empresa nunca veem dados de outra
 - Perfis de acesso: **Administrador** (tudo), **Gestor** (cadastra e move itens), **Consulta** (apenas busca e visualiza)
 - Integração com Stripe: tela de assinatura, aviso de vencimento, bloqueio suave (modo somente-leitura) se o pagamento atrasar
 
 ### 2. Cadastro de Estruturas Físicas
+
 - Cadastro de **Unidades** (prédios/filiais) → **Salas/Armazéns** → **Posições** (mesas, prateleiras, estantes)
 - **Editor de planta 2D:** o administrador monta o desenho da sala arrastando elementos prontos de uma biblioteca (mesas, cadeiras, estantes, prateleiras, portas, paredes, computadores, impressoras, caixas). Deve suportar: arrastar e soltar, girar, redimensionar, encaixe em grade (snap to grid), desfazer/refazer
 - **Divisórias internas:** além do contorno externo da sala, o editor deve permitir desenhar paredes/divisórias internas para subdividir o ambiente em áreas (ex.: recepção, corredor, setor de expedição), cada uma podendo receber um rótulo de nome
@@ -40,12 +42,14 @@ O software será vendido por **assinatura mensal**, com dados armazenados em **b
 - As plantas são salvas como dados estruturados (JSON) no banco, não como imagens
 
 ### 3. Cadastro de Itens e Pessoas
+
 - **Produtos/Ativos:** nome, código/patrimônio, categoria, foto, número de série, data de aquisição, valor, estado de conservação, quantidade (para itens de estoque)
 - **Funcionários:** nome, foto, cargo, setor
 - **Vínculos:** cada item pode estar vinculado a uma posição na planta (ex.: prateleira B3 do armazém) OU a um funcionário (ex.: notebook designado ao João, que aparece na mesa dele na planta do escritório)
 - Geração de **etiquetas com QR Code** para colar nos itens (opcional, mas incluir): escanear o código abre a ficha do item
 
 ### 4. Busca e Localização (funcionalidade principal)
+
 - Barra de busca global sempre visível, com resultados instantâneos ao digitar (busca por nome, código, categoria, funcionário responsável)
 - Ao selecionar um item: o sistema abre a planta 2D da sala correspondente com **animação de destaque** no local exato (pulso/brilho ao redor do móvel ou mesa)
 - **Cartões flutuantes sobre o mapa (callouts):** ao clicar (ou passar o mouse) em uma mesa, estante ou bloco, um cartão de resumo aparece sobreposto à planta, **ancorado ao local por uma linha indicadora** (estilo balão de anotação). O cartão mostra uma lista compacta dos itens naquela posição (ícone + nome + código) e, se for uma mesa de funcionário, o nome e a foto do responsável. Vários cartões podem ficar abertos ao mesmo tempo, e devem se reposicionar automaticamente para não sair da tela nem cobrir o ponto que indicam
@@ -53,6 +57,7 @@ O software será vendido por **assinatura mensal**, com dados armazenados em **b
 - Filtros: por sala, categoria, funcionário, estado
 
 ### 5. Movimentações e Histórico
+
 - Registrar transferência de itens entre posições, salas ou funcionários
 - Histórico completo por item: quem moveu, quando, de onde para onde
 - Relatórios exportáveis (PDF/Excel): inventário geral, itens por funcionário, itens por sala, movimentações no período
