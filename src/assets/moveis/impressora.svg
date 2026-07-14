@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="200" viewBox="0 0 240 200">
+  <defs>
+    <linearGradient id="corpo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#aab3bc"/>
+      <stop offset="1" stop-color="#8b939c"/>
+    </linearGradient>
+    <filter id="sombra" x="-30%" y="-30%" width="180%" height="180%">
+      <feDropShadow dx="8" dy="10" stdDeviation="7" flood-color="#2a2118" flood-opacity="0.3"/>
+    </filter>
+    <filter id="sombraLeve" x="-40%" y="-40%" width="200%" height="200%">
+      <feDropShadow dx="3" dy="4" stdDeviation="2.5" flood-color="#2a2118" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- Corpo -->
+  <g filter="url(#sombra)">
+    <rect x="18" y="46" width="204" height="136" rx="14" fill="url(#corpo)" stroke="#727b84" stroke-width="3"/>
+  </g>
+  <!-- Papel saindo -->
+  <g filter="url(#sombraLeve)">
+    <rect x="62" y="10" width="116" height="70" rx="3" fill="#fbfaf7" stroke="#e4e0d8"/>
+    <g stroke="#d4cfc5" stroke-width="3">
+      <line x1="76" y1="28" x2="164" y2="28"/>
+      <line x1="76" y1="42" x2="164" y2="42"/>
+      <line x1="76" y1="56" x2="140" y2="56"/>
+    </g>
+  </g>
+  <!-- Fenda de saída -->
+  <rect x="50" y="78" width="140" height="10" rx="5" fill="#5f6870"/>
+  <!-- Tampa superior -->
+  <rect x="34" y="100" width="172" height="52" rx="9" fill="#98a1aa"/>
+  <rect x="46" y="112" width="92" height="28" rx="6" fill="#7c858e"/>
+  <!-- Botões -->
+  <circle cx="186" cy="120" r="8" fill="#4ade80"/>
+  <circle cx="186" cy="140" r="6" fill="#5f6870"/>
+  <rect x="158" y="112" width="12" height="30" rx="5" fill="#5f6870"/>
+</svg>

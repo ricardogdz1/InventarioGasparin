@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+  <defs>
+    <linearGradient id="papelao" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d8bd93"/>
+      <stop offset="1" stop-color="#bd9c6c"/>
+    </linearGradient>
+    <filter id="sombra" x="-30%" y="-30%" width="180%" height="180%">
+      <feDropShadow dx="9" dy="11" stdDeviation="7" flood-color="#2a2118" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#sombra)">
+    <rect x="16" y="16" width="188" height="188" rx="10" fill="url(#papelao)" stroke="#a3855b" stroke-width="3"/>
+  </g>
+  <!-- Abas da caixa -->
+  <path d="M 20 20 L 106 110 L 20 200" fill="none" stroke="#a3855b" stroke-width="2.5" opacity="0.75"/>
+  <path d="M 200 20 L 114 110 L 200 200" fill="none" stroke="#a3855b" stroke-width="2.5" opacity="0.75"/>
+  <path d="M 20 20 L 110 106 L 200 20" fill="none" stroke="#a3855b" stroke-width="2" opacity="0.45"/>
+  <path d="M 20 200 L 110 114 L 200 200" fill="none" stroke="#a3855b" stroke-width="2" opacity="0.45"/>
+  <!-- Fita adesiva -->
+  <rect x="100" y="14" width="20" height="192" fill="#caa268" opacity="0.85"/>
+  <rect x="100" y="14" width="20" height="192" fill="#ffffff" opacity="0.12"/>
+  <!-- Sombreado interno das bordas -->
+  <rect x="24" y="24" width="172" height="172" rx="7" fill="none" stroke="#e6d0a8" stroke-width="4" opacity="0.5"/>
+</svg>

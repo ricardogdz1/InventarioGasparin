@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">
+  <defs>
+    <linearGradient id="madeira" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e3cba4"/>
+      <stop offset="0.55" stop-color="#d6b98c"/>
+      <stop offset="1" stop-color="#c5a374"/>
+    </linearGradient>
+    <linearGradient id="assento" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4d5560"/>
+      <stop offset="1" stop-color="#343b44"/>
+    </linearGradient>
+    <linearGradient id="tela" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3440"/>
+      <stop offset="1" stop-color="#171d26"/>
+    </linearGradient>
+    <filter id="sombra" x="-30%" y="-30%" width="170%" height="170%">
+      <feDropShadow dx="10" dy="13" stdDeviation="9" flood-color="#2a2118" flood-opacity="0.30"/>
+    </filter>
+    <filter id="sombraLeve" x="-40%" y="-40%" width="200%" height="200%">
+      <feDropShadow dx="4" dy="5" stdDeviation="3" flood-color="#2a2118" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Cadeira (parcialmente sob a mesa) -->
+  <g filter="url(#sombraLeve)">
+    <path d="M 185 296 q 55 34 110 0 l 6 22 q -61 40 -122 0 z" fill="#2e343d"/>
+    <rect x="163" y="238" width="22" height="64" rx="10" fill="#3a414b"/>
+    <rect x="295" y="238" width="22" height="64" rx="10" fill="#3a414b"/>
+    <circle cx="240" cy="262" r="58" fill="url(#assento)"/>
+    <circle cx="240" cy="256" r="36" fill="#2e343d" opacity="0.55"/>
+  </g>
+
+  <!-- Tampo da mesa -->
+  <g filter="url(#sombra)">
+    <rect x="30" y="18" width="420" height="212" rx="16" fill="url(#madeira)" stroke="#b2926a" stroke-width="3"/>
+  </g>
+  <rect x="42" y="28" width="396" height="190" rx="11" fill="#ecd8b4" opacity="0.35"/>
+  <!-- Veios da madeira -->
+  <path d="M 60 60 q 160 -10 360 4 M 55 130 q 190 8 370 -6 M 62 190 q 150 12 356 2" stroke="#b99a71" stroke-width="2" fill="none" opacity="0.35"/>
+
+  <!-- Monitor -->
+  <g filter="url(#sombraLeve)">
+    <rect x="164" y="46" width="152" height="26" rx="7" fill="url(#tela)"/>
+    <rect x="171" y="51" width="138" height="10" rx="4" fill="#3d566e" opacity="0.8"/>
+    <rect x="233" y="72" width="14" height="12" fill="#222a34"/>
+    <rect x="209" y="84" width="62" height="9" rx="4.5" fill="#222a34"/>
+  </g>
+
+  <!-- Teclado e mouse -->
+  <g filter="url(#sombraLeve)">
+    <rect x="176" y="122" width="128" height="46" rx="7" fill="#3c434d"/>
+    <g fill="#565f6b">
+      <rect x="184" y="130" width="112" height="8" rx="2.5"/>
+      <rect x="184" y="142" width="112" height="8" rx="2.5"/>
+      <rect x="204" y="154" width="72" height="7" rx="2.5"/>
+    </g>
+    <ellipse cx="342" cy="146" rx="13" ry="18" fill="#3c434d"/>
+    <line x1="342" y1="132" x2="342" y2="144" stroke="#565f6b" stroke-width="2"/>
+  </g>
+
+  <!-- Papéis -->
+  <g filter="url(#sombraLeve)">
+    <rect x="66" y="96" width="62" height="82" rx="3" fill="#fbfaf7" stroke="#e4e0d8" transform="rotate(-9 97 137)"/>
+    <g stroke="#c9c4ba" stroke-width="3" transform="rotate(-9 97 137)">
+      <line x1="76" y1="114" x2="118" y2="114"/>
+      <line x1="76" y1="128" x2="118" y2="128"/>
+      <line x1="76" y1="142" x2="106" y2="142"/>
+    </g>
+    <rect x="376" y="60" width="48" height="64" rx="3" fill="#f5f2ec" stroke="#e4e0d8" transform="rotate(12 400 92)"/>
+  </g>
+
+  <!-- Caneca -->
+  <g filter="url(#sombraLeve)">
+    <circle cx="392" cy="176" r="15" fill="#8d6e56"/>
+    <circle cx="392" cy="176" r="10" fill="#5d4436"/>
+    <path d="M 405 168 a 9 9 0 0 1 0 17" fill="none" stroke="#8d6e56" stroke-width="4"/>
+  </g>
+</svg>

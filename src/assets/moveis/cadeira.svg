@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <defs>
+    <linearGradient id="assento" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4d5560"/>
+      <stop offset="1" stop-color="#343b44"/>
+    </linearGradient>
+    <filter id="sombra" x="-30%" y="-30%" width="170%" height="170%">
+      <feDropShadow dx="8" dy="10" stdDeviation="7" flood-color="#2a2118" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#sombra)">
+    <!-- Base em estrela (rodízios) -->
+    <g stroke="#232830" stroke-width="9" stroke-linecap="round" opacity="0.9">
+      <line x1="120" y1="120" x2="120" y2="34"/>
+      <line x1="120" y1="120" x2="202" y2="94"/>
+      <line x1="120" y1="120" x2="171" y2="196"/>
+      <line x1="120" y1="120" x2="69" y2="196"/>
+      <line x1="120" y1="120" x2="38" y2="94"/>
+    </g>
+    <!-- Encosto -->
+    <path d="M 50 158 q 70 44 140 0 l 8 26 q -78 52 -156 0 z" fill="#2e343d"/>
+    <!-- Apoios de braço -->
+    <rect x="26" y="86" width="26" height="74" rx="12" fill="#3a414b"/>
+    <rect x="188" y="86" width="26" height="74" rx="12" fill="#3a414b"/>
+    <!-- Assento -->
+    <circle cx="120" cy="118" r="66" fill="url(#assento)"/>
+    <circle cx="120" cy="112" r="42" fill="#2e343d" opacity="0.55"/>
+    <path d="M 86 92 a 46 46 0 0 1 68 0" fill="none" stroke="#59636f" stroke-width="5" opacity="0.6"/>
+  </g>
+</svg>

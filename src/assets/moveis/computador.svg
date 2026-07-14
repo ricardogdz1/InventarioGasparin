@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160" viewBox="0 0 240 160">
+  <defs>
+    <linearGradient id="tela" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3440"/>
+      <stop offset="1" stop-color="#171d26"/>
+    </linearGradient>
+    <filter id="sombra" x="-30%" y="-30%" width="180%" height="190%">
+      <feDropShadow dx="8" dy="10" stdDeviation="6" flood-color="#2a2118" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Monitor visto de cima: barra da tela + pé + base -->
+  <g filter="url(#sombra)">
+    <rect x="16" y="26" width="208" height="44" rx="12" fill="url(#tela)"/>
+  </g>
+  <rect x="28" y="34" width="184" height="16" rx="6" fill="#3d566e" opacity="0.85"/>
+  <rect x="110" y="70" width="20" height="26" fill="#222a34"/>
+  <rect x="74" y="96" width="92" height="18" rx="9" fill="#222a34"/>
+  <rect x="86" y="100" width="68" height="10" rx="5" fill="#39424e"/>
+</svg>

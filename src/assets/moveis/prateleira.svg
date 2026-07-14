@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="110" viewBox="0 0 440 110">
+  <defs>
+    <linearGradient id="madeira" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9bf99"/>
+      <stop offset="1" stop-color="#c1a173"/>
+    </linearGradient>
+    <filter id="sombra" x="-25%" y="-30%" width="160%" height="190%">
+      <feDropShadow dx="9" dy="11" stdDeviation="7" flood-color="#2a2118" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#sombra)">
+    <rect x="8" y="8" width="424" height="94" rx="7" fill="url(#madeira)" stroke="#a98c62" stroke-width="3"/>
+  </g>
+  <g fill="#a98c62">
+    <rect x="148" y="11" width="6" height="88"/>
+    <rect x="290" y="11" width="6" height="88"/>
+  </g>
+  <!-- Caixas e volumes sobre a prateleira -->
+  <rect x="24" y="24" width="52" height="52" rx="4" fill="#cfb187" stroke="#ab8d60" stroke-width="2" transform="rotate(-4 50 50)"/>
+  <rect x="86" y="30" width="44" height="44" rx="4" fill="#d8bd93" stroke="#ab8d60" stroke-width="2" transform="rotate(7 108 52)"/>
+  <rect x="166" y="22" width="24" height="66" rx="3" fill="#8b9dab"/>
+  <rect x="196" y="22" width="24" height="66" rx="3" fill="#a4b2bd"/>
+  <rect x="226" y="26" width="24" height="62" rx="3" fill="#7d8f9d"/>
+  <rect x="308" y="26" width="56" height="56" rx="4" fill="#c3a273" stroke="#ab8d60" stroke-width="2" transform="rotate(-6 336 54)"/>
+  <rect x="374" y="34" width="42" height="42" rx="4" fill="#cfb187" stroke="#ab8d60" stroke-width="2" transform="rotate(5 395 55)"/>
+</svg>
