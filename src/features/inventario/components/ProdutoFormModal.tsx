@@ -3,6 +3,8 @@ import { Modal } from "../../../components/Modal";
 import { PhotoUpload } from "../../../components/PhotoUpload";
 import { useAllSalas } from "../../estruturas/hooks/useEstruturas";
 import { useFuncionarios } from "../../funcionarios/hooks/useFuncionarios";
+import { usePlantaBySala } from "../../plantas/hooks/usePlantas";
+import { TIPOS_POSICIONAVEIS } from "../../plantas/types";
 import type { ProdutoInput } from "../services/produtosService";
 import { ESTADOS, type EstadoConservacao, type ProdutoDetalhado } from "../types";
 
@@ -47,8 +49,16 @@ function ProdutoForm({
   );
   const [funcionarioId, setFuncionarioId] = useState(editing?.funcionario_id ?? "");
   const [salaId, setSalaId] = useState(editing?.sala_id ?? "");
+  const [posicaoId, setPosicaoId] = useState(editing?.posicao_id ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Planta da sala escolhida: oferece as posições (mesas, estantes…) nomeadas.
+  const planta = usePlantaBySala(tipoVinculo === "sala" && salaId ? salaId : null);
+  const posicoes =
+    planta.data?.dados.elementos.filter(
+      (el) => TIPOS_POSICIONAVEIS.includes(el.tipo) && el.rotulo,
+    ) ?? [];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +77,7 @@ function ProdutoForm({
         foto_path: fotoPath,
         funcionario_id: tipoVinculo === "funcionario" ? funcionarioId || null : null,
         sala_id: tipoVinculo === "sala" ? salaId || null : null,
+        posicao_id: tipoVinculo === "sala" ? posicaoId || null : null,
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -234,19 +245,38 @@ function ProdutoForm({
           </select>
         )}
         {tipoVinculo === "sala" && (
-          <select
-            required
-            value={salaId}
-            onChange={(e) => setSalaId(e.target.value)}
-            className={inputClass}
-          >
-            <option value="">Selecione a sala…</option>
-            {salas.data?.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.unidade ? `${s.unidade.nome} · ${s.nome}` : s.nome}
-              </option>
-            ))}
-          </select>
+          <div className="space-y-2">
+            <select
+              required
+              value={salaId}
+              onChange={(e) => {
+                setSalaId(e.target.value);
+                setPosicaoId("");
+              }}
+              className={inputClass}
+            >
+              <option value="">Selecione a sala…</option>
+              {salas.data?.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.unidade ? `${s.unidade.nome} · ${s.nome}` : s.nome}
+                </option>
+              ))}
+            </select>
+            {salaId && posicoes.length > 0 && (
+              <select
+                value={posicaoId}
+                onChange={(e) => setPosicaoId(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Posição na planta (opcional)…</option>
+                {posicoes.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.rotulo}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
         )}
       </fieldset>
 

@@ -49,6 +49,17 @@ export async function listCategorias(): Promise<string[]> {
   return [...new Set(data.map((r) => r.categoria as string))];
 }
 
+/** Busca um item pelo id, com os vínculos expandidos (usado pela busca global). */
+export async function getProduto(id: string): Promise<ProdutoDetalhado | null> {
+  const { data, error } = await supabase
+    .from("produtos")
+    .select(SELECT_DETALHADO)
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  return data as unknown as ProdutoDetalhado | null;
+}
+
 export interface ProdutoInput {
   nome: string;
   codigo: string | null;
@@ -61,6 +72,8 @@ export interface ProdutoInput {
   foto_path: string | null;
   funcionario_id: string | null;
   sala_id: string | null;
+  /** Elemento da planta da sala onde o item está (mesa, estante…). */
+  posicao_id: string | null;
 }
 
 export async function createProduto(input: ProdutoInput): Promise<Produto> {

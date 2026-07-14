@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { Building2, LogOut, Map, Package, Users } from "lucide-react";
 import { signOut } from "../features/autenticacao/services/authService";
 import { useAuthStore } from "../stores/authStore";
+import { GlobalSearch } from "./GlobalSearch";
 import { SyncIndicator } from "./SyncIndicator";
 
 /** Rótulos dos níveis de acesso exibidos na interface. */
@@ -43,10 +44,9 @@ export function AppLayout() {
           <NavLink to="/estruturas" className={linkClass}>
             <Building2 size={17} /> Estruturas
           </NavLink>
-          {/* Fase 3 — desabilitado por enquanto */}
-          <span className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300">
+          <NavLink to="/plantas" className={linkClass}>
             <Map size={17} /> Plantas 2D
-          </span>
+          </NavLink>
         </nav>
 
         <div className="border-t border-slate-200 pt-3">
@@ -67,9 +67,15 @@ export function AppLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">
-        <Outlet />
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Barra superior com a busca global sempre visível */}
+        <header className="flex h-14 shrink-0 items-center justify-center border-b border-slate-200 bg-white px-6">
+          <GlobalSearch />
+        </header>
+        <main className="min-h-0 flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

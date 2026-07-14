@@ -76,7 +76,7 @@ src-tauri/             # código do shell Tauri (Rust)
 
 1. ✅ **Fase 1 — Fundação:** Tauri + React + Supabase, autenticação, multi-tenant, CRUD de unidades e salas
 2. ✅ **Fase 2 — Inventário básico:** produtos, funcionários, busca, vínculos
-3. ⬜ **Fase 3 — Visualização 2D:** plantas com Konva, destaque de item, callouts
+3. ✅ **Fase 3 — Visualização 2D:** plantas com Konva, destaque de item, callouts
 4. ⬜ **Fase 4 — Editor de plantas:** drag-and-drop, snap to grid, desfazer/refazer
 5. ⬜ **Fase 5 — Movimentações e relatórios:** histórico, PDF/Excel, QR Codes
 6. ⬜ **Fase 6 — Assinatura:** Stripe, bloqueio por inadimplência, instalador Windows

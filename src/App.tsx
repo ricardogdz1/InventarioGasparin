@@ -5,6 +5,7 @@ import { OnboardingPage } from "./features/autenticacao/components/OnboardingPag
 import { EstruturasPage } from "./features/estruturas/components/EstruturasPage";
 import { FuncionariosPage } from "./features/funcionarios/components/FuncionariosPage";
 import { ProdutosPage } from "./features/inventario/components/ProdutosPage";
+import { PlantasPage } from "./features/plantas/components/PlantasPage";
 import { AppLayout } from "./components/AppLayout";
 import { useAuthStore } from "./stores/authStore";
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="/inventario" element={<ProdutosPage />} />
           <Route path="/funcionarios" element={<FuncionariosPage />} />
           <Route path="/estruturas" element={<EstruturasPage />} />
+          <Route path="/plantas" element={<PlantasPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

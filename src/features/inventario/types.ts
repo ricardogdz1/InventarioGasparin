@@ -24,6 +24,7 @@ export interface Produto {
   foto_path: string | null;
   funcionario_id: string | null;
   sala_id: string | null;
+  posicao_id: string | null;
   criado_em: string;
 }
 
