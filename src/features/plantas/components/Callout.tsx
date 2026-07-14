@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState } from "react";
 import { Package, X } from "lucide-react";
 import { FotoThumb } from "../../../components/FotoThumb";
 import type { Funcionario } from "../../funcionarios/types";
@@ -5,7 +6,6 @@ import type { ProdutoDetalhado } from "../../inventario/types";
 import type { ElementoPlanta } from "../types";
 
 const LARGURA_CARTAO = 260;
-const ALTURA_ESTIMADA = 200;
 
 const NOME_TIPO: Record<string, string> = {
   mesa: "Mesa",
@@ -55,21 +55,38 @@ export function Callout({
   onDesignarFuncionario,
   onClose,
 }: CalloutProps) {
-  // Posição preferida: à direita e acima da âncora, escalonando cartões abertos.
-  const desloc = 24 + indice * 28;
-  let left = ancora.x + desloc;
-  let top = ancora.y - ALTURA_ESTIMADA - desloc / 2;
-  // Vira para o outro lado quando encostaria na borda.
-  if (left + LARGURA_CARTAO > container.width - 8) left = ancora.x - LARGURA_CARTAO - desloc;
-  if (top < 8) top = ancora.y + desloc / 2;
-  left = Math.max(8, Math.min(left, container.width - LARGURA_CARTAO - 8));
-  top = Math.max(8, Math.min(top, container.height - 120));
+  // Mede o tamanho REAL do cartão: a linha indicadora encosta na borda exata,
+  // sem depender de altura estimada (era a causa da dessincronização).
+  const cartaoRef = useRef<HTMLDivElement>(null);
+  const [tamanho, setTamanho] = useState({ w: LARGURA_CARTAO, h: 180 });
+  useLayoutEffect(() => {
+    const el = cartaoRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      setTamanho({ w: el.offsetWidth, h: el.offsetHeight });
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-  // A linha liga a âncora ao canto do cartão mais próximo dela.
-  const cantoX =
-    ancora.x < left ? left : ancora.x > left + LARGURA_CARTAO ? left + LARGURA_CARTAO : ancora.x;
-  const cantoY =
-    ancora.y < top ? top : ancora.y > top + ALTURA_ESTIMADA ? top + ALTURA_ESTIMADA : ancora.y;
+  // Preferência: à direita da âncora, centrado verticalmente; vira para a
+  // esquerda quando não há espaço. O escalonamento por índice evita que
+  // vários cartões abertos se cubram.
+  const desloc = 26 + indice * 16;
+  let left = ancora.x + desloc;
+  if (left + tamanho.w > container.width - 8) left = ancora.x - tamanho.w - desloc;
+  left = Math.max(8, Math.min(left, container.width - tamanho.w - 8));
+  let top = ancora.y - tamanho.h / 2 + indice * 24;
+  top = Math.max(8, Math.min(top, container.height - tamanho.h - 8));
+
+  // Ponto da borda do cartão mais próximo da âncora (encosto real da linha).
+  const cantoX = Math.max(left, Math.min(ancora.x, left + tamanho.w));
+  const cantoY = Math.max(top, Math.min(ancora.y, top + tamanho.h));
+  const ancoraDentroDoCartao =
+    ancora.x >= left &&
+    ancora.x <= left + tamanho.w &&
+    ancora.y >= top &&
+    ancora.y <= top + tamanho.h;
   const corLinha = destaque ? "#f97316" : "#94a3b8";
 
   const titulo = elemento.rotulo ?? NOME_TIPO[elemento.tipo] ?? "Posição";
@@ -77,19 +94,22 @@ export function Callout({
   return (
     <>
       <svg className="pointer-events-none absolute inset-0 h-full w-full">
-        <line
-          x1={ancora.x}
-          y1={ancora.y}
-          x2={cantoX}
-          y2={cantoY}
-          stroke={corLinha}
-          strokeWidth={1.5}
-          strokeDasharray="4 3"
-        />
+        {!ancoraDentroDoCartao && (
+          <line
+            x1={ancora.x}
+            y1={ancora.y}
+            x2={cantoX}
+            y2={cantoY}
+            stroke={corLinha}
+            strokeWidth={1.5}
+            strokeDasharray="4 3"
+          />
+        )}
         <circle cx={ancora.x} cy={ancora.y} r={4} fill={corLinha} />
       </svg>
 
       <div
+        ref={cartaoRef}
         className={`absolute rounded-xl bg-white shadow-lg ring-1 ${destaque ? "ring-orange-300" : "ring-slate-200"}`}
         style={{ left, top, width: LARGURA_CARTAO }}
       >

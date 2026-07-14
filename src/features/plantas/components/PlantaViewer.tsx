@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Konva from "konva";
 import { Circle, Layer, Rect, Stage } from "react-konva";
+import { MousePointerClick } from "lucide-react";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Funcionario } from "../../funcionarios/types";
 import type { ProdutoDetalhado } from "../../inventario/types";
@@ -216,6 +217,14 @@ export function PlantaViewer({
           )}
         </Layer>
       </Stage>
+
+      {/* Dica de interação enquanto nenhum cartão está aberto */}
+      {calloutsAbertos.length === 0 && planta.elementos.length > 0 && (
+        <div className="pointer-events-none absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs text-slate-500 shadow ring-1 ring-slate-200">
+          <MousePointerClick size={14} className="text-blue-500" />
+          Clique em um móvel para ver os itens dele
+        </div>
+      )}
 
       {/* Cartões flutuantes ancorados (overlay HTML sincronizado com o canvas) */}
       {calloutsAbertos.map((elementoId, indice) => {
