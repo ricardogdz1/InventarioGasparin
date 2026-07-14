@@ -34,16 +34,16 @@ export function AppLayout() {
         </div>
 
         <nav className="flex flex-1 flex-col gap-1">
+          <NavLink to="/inventario" className={linkClass}>
+            <Package size={17} /> Inventário
+          </NavLink>
+          <NavLink to="/funcionarios" className={linkClass}>
+            <Users size={17} /> Funcionários
+          </NavLink>
           <NavLink to="/estruturas" className={linkClass}>
             <Building2 size={17} /> Estruturas
           </NavLink>
-          {/* Fases futuras — desabilitados por enquanto */}
-          <span className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300">
-            <Package size={17} /> Inventário
-          </span>
-          <span className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300">
-            <Users size={17} /> Funcionários
-          </span>
+          {/* Fase 3 — desabilitado por enquanto */}
           <span className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300">
             <Map size={17} /> Plantas 2D
           </span>

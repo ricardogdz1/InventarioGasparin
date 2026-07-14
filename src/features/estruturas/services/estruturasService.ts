@@ -61,6 +61,18 @@ export async function deleteUnidade(id: string): Promise<void> {
 // Salas
 // ---------------------------------------------------------------------------
 
+/** Todas as salas da empresa com o nome da unidade (para filtros e vínculos). */
+export async function listAllSalas(): Promise<
+  (Sala & { unidade: { id: string; nome: string } | null })[]
+> {
+  const { data, error } = await supabase
+    .from("salas")
+    .select("*, unidade:unidades(id, nome)")
+    .order("nome");
+  if (error) throw error;
+  return data as unknown as (Sala & { unidade: { id: string; nome: string } | null })[];
+}
+
 export async function listSalas(unidadeId: string): Promise<Sala[]> {
   const { data, error } = await supabase
     .from("salas")

@@ -3,6 +3,8 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./features/autenticacao/components/LoginPage";
 import { OnboardingPage } from "./features/autenticacao/components/OnboardingPage";
 import { EstruturasPage } from "./features/estruturas/components/EstruturasPage";
+import { FuncionariosPage } from "./features/funcionarios/components/FuncionariosPage";
+import { ProdutosPage } from "./features/inventario/components/ProdutosPage";
 import { AppLayout } from "./components/AppLayout";
 import { useAuthStore } from "./stores/authStore";
 
@@ -40,7 +42,9 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Navigate to="/estruturas" replace />} />
+          <Route path="/" element={<Navigate to="/inventario" replace />} />
+          <Route path="/inventario" element={<ProdutosPage />} />
+          <Route path="/funcionarios" element={<FuncionariosPage />} />
           <Route path="/estruturas" element={<EstruturasPage />} />
         </Route>
       </Route>

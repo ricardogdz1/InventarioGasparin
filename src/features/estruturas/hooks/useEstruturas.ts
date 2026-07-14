@@ -11,6 +11,11 @@ export function useUnidades() {
   return useQuery({ queryKey: ["unidades"], queryFn: service.listUnidades });
 }
 
+/** Todas as salas da empresa (para filtros e vínculos do inventário). */
+export function useAllSalas() {
+  return useQuery({ queryKey: ["salas", "todas"], queryFn: service.listAllSalas });
+}
+
 export function useSalas(unidadeId: string | null) {
   return useQuery({
     queryKey: ["salas", unidadeId],
