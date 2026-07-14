@@ -5,6 +5,12 @@ import { signIn, signUp } from "../services/authService";
 
 type Mode = "entrar" | "cadastrar";
 
+// Chaves do armazenamento local para lembrar as credenciais entre aberturas.
+// Atenção: a senha fica em texto simples no dispositivo — conveniência
+// solicitada para o app desktop; o risco se limita a quem usa a máquina.
+const STORAGE_EMAIL = "login.emailSalvo";
+const STORAGE_SENHA = "login.senhaSalva";
+
 /**
  * Tela de login e criação de conta.
  * Após criar a conta (ou entrar pela primeira vez sem perfil), o fluxo segue
@@ -13,11 +19,24 @@ type Mode = "entrar" | "cadastrar";
 export function LoginPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("entrar");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Pré-preenche com o que foi salvo na última entrada (se o usuário marcou salvar).
+  const [email, setEmail] = useState(() => localStorage.getItem(STORAGE_EMAIL) ?? "");
+  const [password, setPassword] = useState(() => localStorage.getItem(STORAGE_SENHA) ?? "");
+  const [saveEmail, setSaveEmail] = useState(() => localStorage.getItem(STORAGE_EMAIL) !== null);
+  const [savePassword, setSavePassword] = useState(
+    () => localStorage.getItem(STORAGE_SENHA) !== null,
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+
+  /** Grava ou limpa as credenciais conforme as marcações, após um login bem-sucedido. */
+  function persistCredentials() {
+    if (saveEmail) localStorage.setItem(STORAGE_EMAIL, email);
+    else localStorage.removeItem(STORAGE_EMAIL);
+    if (savePassword) localStorage.setItem(STORAGE_SENHA, password);
+    else localStorage.removeItem(STORAGE_SENHA);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,10 +46,12 @@ export function LoginPage() {
     try {
       if (mode === "entrar") {
         await signIn(email, password);
+        persistCredentials();
         navigate("/", { replace: true });
       } else {
         const { session } = await signUp(email, password);
         if (session) {
+          persistCredentials();
           navigate("/", { replace: true });
         } else {
           // Confirmação de e-mail ativa no Supabase: sessão só após confirmar.
@@ -79,9 +100,24 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="email">
-              E-mail
-            </label>
+            <div className="mb-1 flex items-center justify-between">
+              <label className="block text-sm font-medium text-slate-700" htmlFor="email">
+                E-mail
+              </label>
+              <label className="flex cursor-pointer items-center gap-1.5 text-xs text-slate-500">
+                <input
+                  type="checkbox"
+                  checked={saveEmail}
+                  onChange={(e) => {
+                    setSaveEmail(e.target.checked);
+                    // Desmarcar limpa imediatamente o valor salvo no dispositivo.
+                    if (!e.target.checked) localStorage.removeItem(STORAGE_EMAIL);
+                  }}
+                  className="accent-blue-600"
+                />
+                Salvar e-mail
+              </label>
+            </div>
             <input
               id="email"
               type="email"
@@ -93,9 +129,23 @@ export function LoginPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="password">
-              Senha
-            </label>
+            <div className="mb-1 flex items-center justify-between">
+              <label className="block text-sm font-medium text-slate-700" htmlFor="password">
+                Senha
+              </label>
+              <label className="flex cursor-pointer items-center gap-1.5 text-xs text-slate-500">
+                <input
+                  type="checkbox"
+                  checked={savePassword}
+                  onChange={(e) => {
+                    setSavePassword(e.target.checked);
+                    if (!e.target.checked) localStorage.removeItem(STORAGE_SENHA);
+                  }}
+                  className="accent-blue-600"
+                />
+                Salvar senha
+              </label>
+            </div>
             <input
               id="password"
               type="password"
