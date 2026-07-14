@@ -142,7 +142,7 @@ export function PlantaViewer({
   }
 
   return (
-    <div ref={containerRef} className="relative h-full w-full overflow-hidden bg-[#f5f3ef]">
+    <div ref={containerRef} className="relative h-full w-full overflow-hidden bg-[#dedcd7]">
       <Stage
         width={size.width}
         height={size.height}
@@ -157,18 +157,19 @@ export function PlantaViewer({
         onWheel={handleWheel}
       >
         <Layer>
-          {/* Piso da sala */}
+          {/* Piso da sala (cinza-claro) com paredes espessas ao redor */}
           <Rect
             width={planta.largura}
             height={planta.altura}
-            fill="#ffffff"
-            stroke="#d6d3cd"
-            strokeWidth={3}
-            cornerRadius={16}
-            shadowColor="#0f172a"
-            shadowOpacity={0.08}
-            shadowBlur={16}
-            shadowOffsetY={6}
+            fill="#eceae5"
+            stroke="#b3aea6"
+            strokeWidth={10}
+            cornerRadius={4}
+            shadowColor="#292524"
+            shadowOpacity={0.18}
+            shadowBlur={22}
+            shadowOffsetX={8}
+            shadowOffsetY={12}
             perfectDrawEnabled={false}
             listening={false}
           />

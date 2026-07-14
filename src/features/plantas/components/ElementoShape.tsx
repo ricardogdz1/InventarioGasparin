@@ -4,30 +4,38 @@ import type { KonvaEventObject } from "konva/lib/Node";
 import type { ElementoPlanta, TipoElemento } from "../types";
 
 /**
- * Móveis em flat design cartunizado (identidade visual da especificação):
- * cada tipo tem um desenho próprio, reconhecível à primeira vista mesmo sem
- * rótulo — mesa com cadeira, estante com caixas, porta com arco de abertura…
+ * Móveis em vista de cima, estilo planta de escritório realista porém sóbria
+ * (referência do cliente: mesas de madeira com cadeira encaixada, monitor e
+ * papéis sobre o tampo, sombras longas e suaves — sem excesso de cor).
  * O laranja continua RESERVADO ao destaque do item buscado.
  */
-const COR: Record<string, string> = {
-  mesaTampo: "#bfdbfe",
-  mesaBorda: "#93c5fd",
-  mesaDetalhe: "#dbeafe",
-  cadeira: "#cbd5e1",
-  cadeiraBorda: "#94a3b8",
-  estante: "#ddd6fe",
-  estanteBorda: "#c4b5fd",
-  caixaA: "#fed7aa",
-  caixaB: "#fdba74",
-  caixaFita: "#f59e0b",
-  porta: "#86efac",
-  parede: "#64748b",
-  monitor: "#334155",
-  tela: "#99f6e4",
-  impressora: "#fde68a",
-  impressoraBorda: "#fcd34d",
-  papel: "#ffffff",
-  rotulo: "#475569",
+const COR = {
+  madeira: "#d7bd97",
+  madeiraBorda: "#c2a67d",
+  madeiraClara: "#e2cda9",
+  cadeiraAssento: "#4b5563",
+  cadeiraEncosto: "#374151",
+  monitor: "#1f2937",
+  telaApagada: "#64748b",
+  teclado: "#475569",
+  papel: "#fafaf9",
+  papelBorda: "#e7e5e4",
+  cinza: "#9ca3af",
+  cinzaEscuro: "#6b7280",
+  caixaPapelao: "#cbb287",
+  caixaFita: "#a98e63",
+  parede: "#a8a29e",
+  rotulo: "#57534e",
+} as const;
+
+/** Sombra longa e diagonal, comum a todos os móveis (mesma "luz" da sala). */
+const SOMBRA = {
+  shadowColor: "#292524",
+  shadowOpacity: 0.16,
+  shadowBlur: 8,
+  shadowOffsetX: 5,
+  shadowOffsetY: 7,
+  perfectDrawEnabled: false as const,
 };
 
 interface ElementoShapeProps {
@@ -54,16 +62,15 @@ export function ElementoShape({
   }
 
   const { largura: w, altura: h } = elemento;
+  // A mesa tem cadeira que avança além do tampo: afasta o rótulo para não sobrepor.
+  const offsetRotulo = elemento.tipo === "mesa" ? Math.min(17, w * 0.17) + 10 : 6;
 
   return (
     <Group
       x={elemento.x + w / 2}
       y={elemento.y + h / 2}
-      offsetX={w / 2}
-      offsetY={h / 2}
-      rotation={elemento.rotacao}
-      scaleX={hover && clicavel ? 1.04 : 1}
-      scaleY={hover && clicavel ? 1.04 : 1}
+      scaleX={hover && clicavel ? 1.03 : 1}
+      scaleY={hover && clicavel ? 1.03 : 1}
       onClick={clicavel ? () => onClick!(elemento) : undefined}
       onTap={clicavel ? () => onClick!(elemento) : undefined}
       onMouseEnter={
@@ -84,19 +91,21 @@ export function ElementoShape({
       }
       listening={clicavel}
     >
-      <Desenho tipo={elemento.tipo} w={w} h={h} hover={hover && clicavel} />
+      {/* Só o desenho gira; rótulos e selo ficam sempre legíveis */}
+      <Group rotation={elemento.rotacao} offsetX={w / 2} offsetY={h / 2}>
+        <Desenho tipo={elemento.tipo} w={w} h={h} hover={hover && clicavel} />
+      </Group>
 
-      {/* Rótulo e nome do funcionário (informação extra, não é mais a única pista) */}
       {elemento.rotulo && (
         <Text
           text={elemento.rotulo}
-          width={ehArea ? w - 16 : w}
-          x={ehArea ? 10 : 0}
-          y={ehArea ? 8 : h + 4}
+          width={ehArea ? w - 16 : w + 60}
+          x={ehArea ? -w / 2 + 10 : -w / 2 - 30}
+          y={ehArea ? -h / 2 + 8 : h / 2 + offsetRotulo}
           align={ehArea ? "left" : "center"}
           fontSize={ehArea ? 13 : 11}
           fontStyle={ehArea ? "bold" : "normal"}
-          fill={ehArea ? "#94a3b8" : COR.rotulo}
+          fill={ehArea ? "#a8a29e" : COR.rotulo}
           listening={false}
           perfectDrawEnabled={false}
         />
@@ -104,18 +113,18 @@ export function ElementoShape({
       {nomeFuncionario && (
         <Text
           text={nomeFuncionario}
-          width={w + 40}
-          x={-20}
-          y={elemento.rotulo ? h + 17 : h + 4}
+          width={w + 60}
+          x={-w / 2 - 30}
+          y={h / 2 + offsetRotulo + (elemento.rotulo ? 13 : 0)}
           align="center"
           fontSize={10}
-          fill="#64748b"
+          fill="#78716c"
           listening={false}
           perfectDrawEnabled={false}
         />
       )}
       {!!qtdItens && qtdItens > 0 && (
-        <Group x={w - 11} y={-7} listening={false}>
+        <Group x={w / 2 - 11} y={-h / 2 - 7} listening={false}>
           <Rect
             width={22}
             height={16}
@@ -143,7 +152,66 @@ export function ElementoShape({
   );
 }
 
-/** Desenho específico de cada tipo de móvel (coordenadas locais 0..w × 0..h). */
+/**
+ * Cadeira de escritório vista de cima: assento arredondado, encosto em arco
+ * e dois apoios de braço. `rotacaoLocal` gira a cadeira em torno do assento
+ * (0 = encosto para baixo, como quem senta de frente para cima).
+ */
+function CadeiraTopo({
+  cx,
+  cy,
+  r,
+  rotacao = 0,
+}: {
+  cx: number;
+  cy: number;
+  r: number;
+  rotacao?: number;
+}) {
+  return (
+    <Group x={cx} y={cy} rotation={rotacao} listening={false}>
+      {/* Encosto (arco na parte de baixo do assento) */}
+      <Arc
+        innerRadius={r * 0.92}
+        outerRadius={r * 1.28}
+        angle={130}
+        rotation={25}
+        fill={COR.cadeiraEncosto}
+        cornerRadius={3}
+        perfectDrawEnabled={false}
+      />
+      {/* Apoios de braço */}
+      <Rect
+        x={-r * 1.12}
+        y={-r * 0.5}
+        width={r * 0.3}
+        height={r}
+        cornerRadius={r * 0.15}
+        fill={COR.cadeiraEncosto}
+        perfectDrawEnabled={false}
+      />
+      <Rect
+        x={r * 0.82}
+        y={-r * 0.5}
+        width={r * 0.3}
+        height={r}
+        cornerRadius={r * 0.15}
+        fill={COR.cadeiraEncosto}
+        perfectDrawEnabled={false}
+      />
+      {/* Assento */}
+      <Circle radius={r * 0.9} fill={COR.cadeiraAssento} {...SOMBRA} />
+      <Circle
+        radius={r * 0.55}
+        fill={COR.cadeiraEncosto}
+        opacity={0.35}
+        perfectDrawEnabled={false}
+      />
+    </Group>
+  );
+}
+
+/** Desenho de cada tipo de móvel (coordenadas locais 0..w × 0..h). */
 function Desenho({
   tipo,
   w,
@@ -156,112 +224,129 @@ function Desenho({
   hover: boolean;
 }) {
   const sombra = {
-    shadowColor: "#0f172a",
-    shadowOpacity: hover ? 0.22 : 0.13,
-    shadowBlur: hover ? 9 : 6,
-    shadowOffsetY: 3,
-    perfectDrawEnabled: false as const,
+    ...SOMBRA,
+    shadowOpacity: hover ? 0.26 : SOMBRA.shadowOpacity,
+    shadowBlur: hover ? 11 : SOMBRA.shadowBlur,
   };
 
   switch (tipo) {
     case "mesa": {
-      const cadeiraR = Math.min(14, w * 0.14);
+      // Estação de trabalho: cadeira encaixada embaixo do tampo + monitor,
+      // teclado e uma folha de papel sobre a mesa (como nas referências).
+      const rCadeira = Math.min(17, w * 0.17);
+      const mostrarItens = w >= 80 && h >= 50;
+      const monitorW = w * 0.32;
       return (
         <>
-          {/* Cadeira atrás da mesa (deixa óbvio que é um posto de trabalho) */}
-          <Circle
-            x={w / 2}
-            y={-cadeiraR * 0.4}
-            radius={cadeiraR}
-            fill={COR.cadeira}
-            stroke={COR.cadeiraBorda}
-            strokeWidth={1}
-            perfectDrawEnabled={false}
-          />
-          <Arc
-            x={w / 2}
-            y={-cadeiraR * 0.4}
-            innerRadius={cadeiraR}
-            outerRadius={cadeiraR + 3.5}
-            angle={150}
-            rotation={195}
-            fill={COR.cadeiraBorda}
-            perfectDrawEnabled={false}
-          />
-          {/* Tampo da mesa */}
+          {/* Cadeira desenhada antes: o tampo cobre metade do assento (encaixada) */}
+          <CadeiraTopo cx={w / 2} cy={h + rCadeira * 0.15} r={rCadeira} rotacao={0} />
+          {/* Tampo de madeira */}
           <Rect
             width={w}
             height={h}
-            fill={COR.mesaTampo}
-            stroke={COR.mesaBorda}
+            fill={COR.madeira}
+            stroke={COR.madeiraBorda}
             strokeWidth={1.5}
-            cornerRadius={10}
+            cornerRadius={6}
             {...sombra}
           />
           <Rect
-            x={5}
-            y={5}
-            width={w - 10}
-            height={h - 10}
-            fill={COR.mesaDetalhe}
-            cornerRadius={7}
+            x={3}
+            y={3}
+            width={w - 6}
+            height={h - 6}
+            fill={COR.madeiraClara}
+            opacity={0.5}
+            cornerRadius={4}
             listening={false}
             perfectDrawEnabled={false}
           />
+          {mostrarItens && (
+            <>
+              {/* Monitor (barra escura) com pezinho */}
+              <Rect
+                x={w / 2 - monitorW / 2}
+                y={h * 0.16}
+                width={monitorW}
+                height={7}
+                cornerRadius={2.5}
+                fill={COR.monitor}
+                listening={false}
+                perfectDrawEnabled={false}
+              />
+              <Rect
+                x={w / 2 - 2}
+                y={h * 0.16 + 7}
+                width={4}
+                height={4}
+                fill={COR.monitor}
+                listening={false}
+                perfectDrawEnabled={false}
+              />
+              {/* Teclado */}
+              <Rect
+                x={w / 2 - monitorW * 0.4}
+                y={h * 0.5}
+                width={monitorW * 0.8}
+                height={h * 0.16}
+                cornerRadius={2}
+                fill={COR.teclado}
+                opacity={0.8}
+                listening={false}
+                perfectDrawEnabled={false}
+              />
+              {/* Folha de papel levemente girada */}
+              <Rect
+                x={w * 0.74}
+                y={h * 0.3}
+                width={w * 0.15}
+                height={h * 0.42}
+                cornerRadius={1}
+                fill={COR.papel}
+                stroke={COR.papelBorda}
+                strokeWidth={0.5}
+                rotation={12}
+                listening={false}
+                perfectDrawEnabled={false}
+              />
+            </>
+          )}
         </>
       );
     }
 
     case "cadeira": {
       const r = Math.min(w, h) / 2;
-      return (
-        <>
-          <Circle
-            x={w / 2}
-            y={h / 2}
-            radius={r}
-            fill={COR.cadeira}
-            stroke={COR.cadeiraBorda}
-            strokeWidth={1.5}
-            {...sombra}
-          />
-          <Arc
-            x={w / 2}
-            y={h / 2}
-            innerRadius={r}
-            outerRadius={r + 4}
-            angle={160}
-            rotation={100}
-            fill={COR.cadeiraBorda}
-            perfectDrawEnabled={false}
-          />
-        </>
-      );
+      return <CadeiraTopo cx={w / 2} cy={h / 2} r={r} />;
     }
 
     case "estante":
     case "prateleira": {
+      // Vista de cima de estante/prateleira: estrutura de madeira com
+      // divisões e volumes neutros (caixas/pastas) dentro.
       const horizontal = w >= h;
       const numDivisoes = horizontal
         ? Math.max(2, Math.round(w / 55))
         : Math.max(2, Math.round(h / 55));
-      const caixas: React.ReactNode[] = [];
-      // Caixinhas alternadas dentro dos compartimentos (leitura imediata: armazenagem)
+      const conteudo: React.ReactNode[] = [];
       for (let i = 0; i < numDivisoes; i++) {
         const t = (i + 0.5) / numDivisoes;
         const cx = horizontal ? t * w : w / 2;
         const cy = horizontal ? h / 2 : t * h;
         const tam =
-          Math.min(horizontal ? w / numDivisoes : w, horizontal ? h : h / numDivisoes) * 0.45;
-        caixas.push(
+          Math.min(horizontal ? w / numDivisoes : w, horizontal ? h : h / numDivisoes) * 0.5;
+        conteudo.push(
           <Rect
             key={i}
             x={cx - tam / 2}
             y={cy - tam / 2}
             width={tam}
             height={tam}
-            fill={i % 2 === 0 ? COR.caixaA : COR.caixaB}
+            fill={i % 2 === 0 ? COR.caixaPapelao : COR.madeiraClara}
+            stroke={COR.caixaFita}
+            strokeWidth={0.5}
             cornerRadius={2}
+            rotation={i % 3 === 1 ? 6 : 0}
             listening={false}
             perfectDrawEnabled={false}
           />,
@@ -272,10 +357,10 @@ function Desenho({
           <Rect
             width={w}
             height={h}
-            fill={COR.estante}
-            stroke={COR.estanteBorda}
+            fill={COR.madeira}
+            stroke={COR.madeiraBorda}
             strokeWidth={1.5}
-            cornerRadius={6}
+            cornerRadius={4}
             {...sombra}
           />
           {Array.from({ length: numDivisoes - 1 }, (_, i) => {
@@ -283,116 +368,50 @@ function Desenho({
             return (
               <Line
                 key={i}
-                points={horizontal ? [t, 3, t, h - 3] : [3, t, w - 3, t]}
-                stroke={COR.estanteBorda}
+                points={horizontal ? [t, 2, t, h - 2] : [2, t, w - 2, t]}
+                stroke={COR.madeiraBorda}
                 strokeWidth={1.5}
                 listening={false}
                 perfectDrawEnabled={false}
               />
             );
           })}
-          {caixas}
+          {conteudo}
         </>
       );
     }
 
-    case "porta": {
-      // Convenção de planta baixa: folha da porta + arco de abertura
-      const raio = Math.max(w, h);
-      const horizontal = w >= h;
+    case "porta":
+      // Sem desenho de portas na proposta atual — marca discreta no piso.
       return (
-        <>
-          <Rect width={w} height={h} fill={COR.porta} cornerRadius={2} perfectDrawEnabled={false} />
-          <Arc
-            x={0}
-            y={horizontal ? h / 2 : 0}
-            innerRadius={raio - 1.5}
-            outerRadius={raio}
-            angle={90}
-            rotation={horizontal ? -90 : 0}
-            stroke={COR.porta}
-            strokeWidth={1.5}
-            dash={[5, 4]}
-            listening={false}
-            perfectDrawEnabled={false}
-          />
-          <Line
-            points={horizontal ? [0, h / 2, 0, h / 2 - raio] : [0, 0, raio, 0]}
-            stroke={COR.porta}
-            strokeWidth={3}
-            lineCap="round"
-            listening={false}
-            perfectDrawEnabled={false}
-          />
-        </>
+        <Rect width={w} height={h} fill="#e7e5e4" cornerRadius={2} perfectDrawEnabled={false} />
       );
-    }
 
     case "parede":
-    case "divisoria": {
-      const horizontal = w >= h;
-      const passos = Math.floor((horizontal ? w : h) / 14);
-      return (
-        <>
-          <Rect
-            width={w}
-            height={h}
-            fill={COR.parede}
-            cornerRadius={2}
-            perfectDrawEnabled={false}
-          />
-          {Array.from({ length: passos }, (_, i) => {
-            const t = (i + 0.5) * 14;
-            return (
-              <Line
-                key={i}
-                points={
-                  horizontal ? [t, 1, t + Math.min(6, h), h - 1] : [1, t, w - 1, t + Math.min(6, w)]
-                }
-                stroke="#f8fafc"
-                strokeWidth={1}
-                opacity={0.5}
-                listening={false}
-                perfectDrawEnabled={false}
-              />
-            );
-          })}
-        </>
-      );
-    }
+    case "divisoria":
+      return <Rect width={w} height={h} fill={COR.parede} cornerRadius={1} {...sombra} />;
 
     case "computador": {
-      const baseH = h * 0.18;
+      // Monitor avulso visto de cima: barra escura + base.
       return (
         <>
-          {/* Monitor com tela acesa + pé */}
-          <Rect width={w} height={h - baseH - 3} fill={COR.monitor} cornerRadius={4} {...sombra} />
-          <Rect
-            x={2.5}
-            y={2.5}
-            width={w - 5}
-            height={h - baseH - 8}
-            fill={COR.tela}
-            cornerRadius={2.5}
-            listening={false}
-            perfectDrawEnabled={false}
-          />
+          <Rect width={w} height={h * 0.42} cornerRadius={3} fill={COR.monitor} {...sombra} />
           <Rect
             x={w / 2 - 2}
-            y={h - baseH - 3}
+            y={h * 0.42}
             width={4}
-            height={baseH}
+            height={h * 0.28}
             fill={COR.monitor}
             listening={false}
             perfectDrawEnabled={false}
           />
           <Rect
-            x={w / 2 - w * 0.28}
-            y={h - 2.5}
-            width={w * 0.56}
-            height={2.5}
-            cornerRadius={1}
-            fill={COR.monitor}
+            x={w * 0.28}
+            y={h * 0.7}
+            width={w * 0.44}
+            height={h * 0.2}
+            cornerRadius={2}
+            fill={COR.telaApagada}
             listening={false}
             perfectDrawEnabled={false}
           />
@@ -404,43 +423,33 @@ function Desenho({
       return (
         <>
           <Rect
-            y={h * 0.22}
             width={w}
-            height={h * 0.78}
-            fill={COR.impressora}
-            stroke={COR.impressoraBorda}
-            strokeWidth={1.5}
-            cornerRadius={6}
+            height={h}
+            fill={COR.cinza}
+            stroke={COR.cinzaEscuro}
+            strokeWidth={1}
+            cornerRadius={5}
             {...sombra}
           />
-          {/* Papel saindo por cima */}
           <Rect
-            x={w * 0.2}
-            y={0}
-            width={w * 0.6}
-            height={h * 0.34}
-            fill={COR.papel}
-            stroke="#e2e8f0"
-            strokeWidth={1}
+            x={w * 0.18}
+            y={h * 0.12}
+            width={w * 0.64}
+            height={h * 0.3}
             cornerRadius={1}
+            fill={COR.papel}
+            stroke={COR.papelBorda}
+            strokeWidth={0.5}
             listening={false}
             perfectDrawEnabled={false}
           />
           <Rect
             x={w * 0.12}
-            y={h * 0.52}
+            y={h * 0.58}
             width={w * 0.76}
-            height={h * 0.1}
+            height={h * 0.12}
             cornerRadius={2}
-            fill={COR.impressoraBorda}
-            listening={false}
-            perfectDrawEnabled={false}
-          />
-          <Circle
-            x={w * 0.85}
-            y={h * 0.38}
-            radius={2.5}
-            fill="#22c55e"
+            fill={COR.cinzaEscuro}
             listening={false}
             perfectDrawEnabled={false}
           />
@@ -454,34 +463,35 @@ function Desenho({
           <Rect
             width={w}
             height={h}
-            fill={COR.caixaA}
-            stroke={COR.caixaB}
-            strokeWidth={1.5}
-            cornerRadius={4}
+            fill={COR.caixaPapelao}
+            stroke={COR.caixaFita}
+            strokeWidth={1}
+            cornerRadius={3}
             {...sombra}
           />
-          {/* Fita adesiva + abas da caixa */}
           <Rect
-            x={w / 2 - 2.5}
+            x={w / 2 - 2}
             y={0}
-            width={5}
+            width={4}
             height={h}
             fill={COR.caixaFita}
-            opacity={0.7}
+            opacity={0.55}
             listening={false}
             perfectDrawEnabled={false}
           />
           <Line
-            points={[0, 0, w * 0.32, h / 2, 0, h]}
-            stroke={COR.caixaB}
-            strokeWidth={1}
+            points={[0, 0, w * 0.3, h / 2, 0, h]}
+            stroke={COR.caixaFita}
+            strokeWidth={0.8}
+            opacity={0.6}
             listening={false}
             perfectDrawEnabled={false}
           />
           <Line
-            points={[w, 0, w * 0.68, h / 2, w, h]}
-            stroke={COR.caixaB}
-            strokeWidth={1}
+            points={[w, 0, w * 0.7, h / 2, w, h]}
+            stroke={COR.caixaFita}
+            strokeWidth={0.8}
+            opacity={0.6}
             listening={false}
             perfectDrawEnabled={false}
           />
@@ -494,8 +504,8 @@ function Desenho({
         <Rect
           width={w}
           height={h}
-          fill="rgba(100, 116, 139, 0.05)"
-          stroke="#cbd5e1"
+          fill="rgba(120, 113, 108, 0.05)"
+          stroke="#d6d3d1"
           strokeWidth={1.5}
           dash={[8, 6]}
           cornerRadius={14}
@@ -505,7 +515,7 @@ function Desenho({
 
     default:
       return (
-        <Rect width={w} height={h} fill="#e2e8f0" stroke="#cbd5e1" cornerRadius={6} {...sombra} />
+        <Rect width={w} height={h} fill="#e7e5e4" stroke="#d6d3d1" cornerRadius={6} {...sombra} />
       );
   }
 }
