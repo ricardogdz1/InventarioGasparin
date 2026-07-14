@@ -137,6 +137,21 @@ export function PlantasPage() {
             </option>
           ))}
         </select>
+        {isAdmin && planta.data && (
+          <button
+            type="button"
+            onClick={() => {
+              const ok = window.confirm(
+                "Regerar a planta de exemplo? O desenho atual desta sala será substituído (posições de itens apontando para móveis antigos ficarão sem posição).",
+              );
+              if (ok) mutations.salvar.mutate(gerarPlantaExemplo());
+            }}
+            disabled={mutations.salvar.isPending}
+            className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-50 disabled:opacity-60"
+          >
+            <Wand2 size={13} /> Regerar exemplo
+          </button>
+        )}
         {semPosicao.length > 0 && (
           <span className="ml-auto flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
             <PackageSearch size={13} />
